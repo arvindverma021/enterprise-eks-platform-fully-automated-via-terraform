@@ -1,3 +1,23 @@
+# Python
+app/venv/
+app/__pycache__/
+*.pyc
+
+# Terraform
+.terraform/
+*.tfstate*
+.terraform.lock.hcl
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+
 # Terraform
 .terraform/
 *.tfstate
