@@ -15,3 +15,12 @@ module "eks" {
   cluster_name       = "enterprise-eks"
   private_subnet_ids = module.vpc.private_subnet_ids
 }
+
+
+module "monitoring" {
+  source = "./modules/monitoring"
+
+  depends_on = [
+    module.eks
+  ]
+}

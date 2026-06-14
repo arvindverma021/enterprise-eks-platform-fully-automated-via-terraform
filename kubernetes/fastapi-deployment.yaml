@@ -2,25 +2,33 @@ apiVersion: apps/v1
 kind: Deployment
 
 metadata:
-  name: fastapi-app
-
-spec:
-  replicas: 2
-
-  selector:
-    matchLabels:
-      app: fastapi-app
-
-  template:
-    metadata:
-      labels:
-        app: fastapi-app
+    name: fastapi-app
 
     spec:
-      containers:
-      - name: fastapi-app
+        replicas: 2
 
-        image: 738605694660.dkr.ecr.ap-south-1.amazonaws.com/fastapi-app:v1
+            selector:
+                  matchLabels:
+                          app: fastapi-app
 
-        ports:
-        - containerPort: 8000
+                              template:
+                                    metadata:
+                                            labels:
+                                                      app: fastapi-app
+
+                                                            spec:
+                                                                    containers:
+                                                                            - name: fastapi-app
+
+                                                                                      image: 738605694660.dkr.ecr.ap-south-1.amazonaws.com/fastapi-app:latest
+
+                                                                                                ports:
+                                                                                                          - containerPort: 8000
+
+                                                                                                                    resources:
+                                                                                                                                requests:
+                                                                                                                                              cpu: "200m"
+                                                                                                                                                            memory: "256Mi"
+                                                                                                                                                                        limits:
+                                                                                                                                                                                      cpu: "500m"
+                                                                                                                                                                                                    memory: "512Mi"

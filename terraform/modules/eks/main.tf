@@ -29,6 +29,7 @@ resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
 
 #EKS Cluster Formation
 
+
 resource "aws_eks_cluster" "main" {
   name     = var.cluster_name
   role_arn = aws_iam_role.eks_cluster_role.arn
@@ -37,8 +38,12 @@ resource "aws_eks_cluster" "main" {
     subnet_ids = var.private_subnet_ids
   }
 
-  depends_on = [
-    aws_iam_role_policy_attachment.eks_cluster_policy
+  enabled_cluster_log_types = [
+    "api",
+    "audit",
+    "authenticator",
+    "controllerManager",
+    "scheduler"
   ]
 }
 
@@ -111,3 +116,30 @@ resource "aws_eks_node_group" "main" {
     aws_iam_role_policy_attachment.cni_policy
   ]
 }
+
+
+# Add OIDC Directly In Terraform
+
+
+data "tls_certificate" "eks" {
+  url = aws_eks_cluster.main.identity[0].oidc[0].issuer
+}
+
+resource "aws_iam_openid_connect_provider" "eks" {
+  client_id_list = ["sts.amazonaws.com"]
+
+  thumbprint_list = [
+    data.tls_certificate.eks.certificates[0].sha1_fingerprint
+  ]
+
+  url = aws_eks_cluster.main.identity[0].oidc[0].issuer
+}
+
+
+#CloudWatch
+
+resource "aws_cloudwatch_log_group" "eks_logs" {
+  name              = "/aws/eks/${var.cluster_name}/cluster"
+  retention_in_days = 7
+}
+
